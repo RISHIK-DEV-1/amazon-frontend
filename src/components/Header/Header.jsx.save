@@ -1,0 +1,133 @@
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "./Header.css";
+
+import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
+import products from "../../data/products";
+
+function Header() {
+  const { cart } = useContext(CartContext);
+  const { user, logout } = useContext(AuthContext);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const navigate = useNavigate();
+
+  const filtered =
+    searchText.trim().length > 0
+      ? products.filter((p) =>
+          p.title.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : [];
+
+  return (
+    <>
+      {/* SIDE MENU */}
+      <div className={`side-menu ${menuOpen ? "open" : ""}`}>
+        <div className="side-menu-header">
+          <span>Hello, {user.name}</span>
+          <button onClick={() => setMenuOpen(false)}>✕</button>
+        </div>
+
+        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+        <Link to="/products/deals" onClick={() => setMenuOpen(false)}>Deals of the Day</Link>
+        <Link to="/products/recommended" onClick={() => setMenuOpen(false)}>Recommended</Link>
+        <Link to="/cart" onClick={() => setMenuOpen(false)}>Your Cart</Link>
+
+        <span className="logout-text" onClick={logout}>Logout</span>
+      </div>
+
+      {menuOpen && <div className="overlay" onClick={() => setMenuOpen(false)} />}
+
+      <header className="header">
+        {/* TOP BAR */}
+        <div className="top-bar">
+          {/* LEFT */}
+          <div className="top-bar-left">
+            <div className="menu" onClick={() => setMenuOpen(true)}>☰</div>
+            <span
+              className="home-btn"
+              onClick={() => navigate("/")}
+              title="Back to Home"
+            >
+              🏠
+            </span>
+          </div>
+
+          {/* CENTER */}
+          <div className="top-bar-center">
+            <Link to="/">
+              <img
+                className="logo"
+                src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+                alt="Amazon"
+              />
+            </Link>
+          </div>
+
+          {/* RIGHT */}
+          <div className="top-bar-right">
+            <Link to="/cart" className="header-cart">
+              🛒
+              <span className="cart-count">{cart.length}</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* SEARCH */}
+        <div className="search-row">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search Amazon.in"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <button
+              onClick={() => {
+                if (searchText.trim()) {
+                  navigate(`/search?q=${searchText}`);
+                  setSearchText("");
+                }
+              }}
+            >
+              🔍
+            </button>
+          </div>
+
+          {searchText && filtered.length > 0 && (
+            <div className="search-dropdown">
+              {filtered.slice(0, 6).map((item) => (
+                <div
+                  key={item.id}
+                  className="search-item"
+                  onClick={() => {
+                    navigate(`/product/${item.id}`, { state: item });
+                    setSearchText("");
+                  }}
+                >
+                  <img src={item.image} alt={item.title} />
+                  <span>{item.title}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* BOTTOM BAR */}
+        <div className="bottom-bar">
+          <div className="user-item">📍 Deliver to India</div>
+          <div className="user-item">
+             Hello, <strong>{user.name}</strong>
+          </div>
+          <div className="user-item" onClick={logout} style={{ cursor: "pointer" }}>
+            Logout
+          </div>
+        </div>
+      </header>
+    </>
+  );
+}
+
+export default Header;

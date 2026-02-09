@@ -1,0 +1,213 @@
+/* MAIN HEADER */
+.header {
+  background-color: #131921;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* ========== TOP BAR ========== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+}
+
+/* LEFT GROUP (☰ + 🏠) */
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.home-btn {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* CENTER LOGO */
+.top-bar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  height: 32px;
+  padding: 7px 25px 0 0;
+  object-fit: contain;
+  filter: brightness(1) invert(1);
+}
+
+/* RIGHT CART */
+.top-bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-cart {
+  position: relative;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: #f08804;
+  color: #111;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}
+
+/* ========== SEARCH BAR ========== */
+.search-row {
+  padding: 6px 10px;
+  position: relative;
+}
+
+/* ROUNDED SEARCH BAR CONTAINER */
+.search-bar {
+  display: flex;
+  width: 100%;
+  border-radius: 24px;        /* 🔵 ROUND EDGE */
+  overflow: hidden;           /* 🔵 CLIP CHILD EDGES */
+  background: white;
+}
+
+/* INPUT */
+.search-bar input {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  border-radius: 24px 0 0 24px; /* LEFT ROUND */
+}
+
+/* SEARCH BUTTON */
+.search-bar button {
+  padding: 0 16px;
+  border: none;
+  background-color: #febd69;
+  cursor: pointer;
+  border-radius: 0 24px 24px 0; /* RIGHT ROUND */
+}
+
+.search-bar button:hover {
+  background-color: #f3a847;
+}
+
+/* SEARCH DROPDOWN */
+.search-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 10px;
+  right: 10px;
+  background: white;
+  color: #111;
+  z-index: 1000;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.search-item img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.search-item:hover {
+  background: #f3f3f3;
+}
+
+/* ========== BOTTOM BAR ========== */
+.bottom-bar {
+  background: #232f3e;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.user-item {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ========== SIDE MENU ========== */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background: white;
+  z-index: 1200;
+  transition: left 0.25s ease;
+  overflow-y: auto;
+}
+
+.side-menu.open {
+  left: 0;
+}
+
+.side-menu-header {
+  background: #232f3e;
+  color: white;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-menu-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.side-menu a,
+.logout-text {
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #111;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.side-menu a:hover,
+.logout-text:hover {
+  background: #f3f3f3;
+}
+
+.logout-text {
+  font-weight: normal;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1100;
+}

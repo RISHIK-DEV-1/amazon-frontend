@@ -1,0 +1,8 @@
+.categories {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  background: #232f3e;
+  color: white;
+  padding: 10px;
+}

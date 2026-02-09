@@ -1,0 +1,101 @@
+.deals {
+  background: #f0f0f0;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+}
+
+.deals-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.deals-header h2 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #111;
+}
+
+.deals-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.deals-row::-webkit-scrollbar {
+  display: none;
+}
+
+.deal-card {
+  flex: 0 0 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 6px;
+  padding: 8px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.deal-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+
+.deal-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 4px;
+  min-height: 36px;
+}
+
+.deal-price {
+  font-size: 14px;
+  font-weight: bold;
+  color: #b12704;
+  margin-bottom: 6px;
+}
+
+.add-to-cart-btn {
+  width: 100%;
+  padding: 4px 0;
+  font-size: 12px;
+  background: #ffd814;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-to-cart-btn:hover {
+  background: #f7ca00;
+}
+
+.qty-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.qty-controls button {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.qty-controls span {
+  width: 20px;
+  text-align: center;
+  font-weight: 500;
+}

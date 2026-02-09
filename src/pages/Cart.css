@@ -1,0 +1,89 @@
+.cart-page {
+  padding: 16px;
+  background: #eaeded;
+  min-height: 100vh;
+}
+
+.cart-item {
+  display: flex;
+  gap: 12px;
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.cart-item img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+
+.cart-item p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.qty button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #aaa;
+  background: #f0f0f0;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.qty span {
+  font-size: 14px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.remove-btn {
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  background: #ffcccc;
+  border: 1px solid #ff5555;
+  color: #900;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #ff9999;
+}
+
+.cart-page > button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  background: #ffd814;
+  border: 1px solid #fcd200;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cart-page > button:hover {
+  background: #f7ca00;
+}
+
+/* Added style for disabled "Added" button */
+.add-cart-btn.added {
+  background-color: #d3d3d3;
+  border: 1px solid #aaa;
+  color: #555;
+  cursor: not-allowed;
+}

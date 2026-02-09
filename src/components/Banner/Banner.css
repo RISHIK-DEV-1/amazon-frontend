@@ -1,0 +1,17 @@
+.banner {
+  width: 100vw;          /* full screen width */
+  overflow: hidden;
+  margin-top:5px;
+}
+
+.banner-track {
+  display: flex;
+  width: max-content;
+}
+
+.banner-track img {
+  width: 100vw;          /* each banner full width */
+  height: 180px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
