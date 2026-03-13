@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import products from "../data/products";
 import "./ProductsList.css";
 
 function SearchResults() {

@@ -1,11 +1,19 @@
 import "./DealsOfDay.css";
 import { useNavigate } from "react-router-dom";
-import products from "../../data/products";
+import { useEffect, useState } from "react";
+
+// ---------- BASE URL for backend ----------
+const BASE_URL = "https://amazon-backend-production-219d.up.railway.app";
 
 function DealsOfDay() {
   const navigate = useNavigate();
+  const [deals, setDeals] = useState([]);
 
-  const deals = products.filter((p) => p.category === "deals");
+  useEffect(() => {
+    fetch(`${BASE_URL}/products/category/deals`)
+      .then(res => res.json())
+      .then(data => setDeals(data));
+  }, []);
 
   return (
     <section className="deals">
@@ -21,7 +29,7 @@ function DealsOfDay() {
           <div
             key={item.id}
             className="deal-card"
-            onClick={() => navigate(`/product/${item.id}`, { state: item })}
+            onClick={() => navigate(`/product/${item.id}`)}
           >
             <img src={item.image} alt={item.title} />
             <p className="deal-title">{item.title}</p>

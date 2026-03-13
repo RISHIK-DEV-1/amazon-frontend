@@ -1,40 +1,59 @@
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import "./ProductDetails.css";
 import { CartContext } from "../context/CartContext";
-import products from "../data/products";
+import { AuthContext, BASE_URL } from "../context/AuthContext"; // Added BASE_URL
 
 function ProductDetails() {
   const { id } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
   const { addToCart, isInCart, removeFromCart, cart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
-  const product = location.state || products.find((p) => String(p.id) === String(id));
+  // Load product from backend
+  useEffect(() => {
+    fetch(`${BASE_URL}/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProduct(data);
+        if (user) saveRecentViewed(data, user.email); // Save dynamically
+      })
+      .catch((err) => {
+        console.error("Error fetching product:", err);
+      });
+  }, [id, user]);
 
-  const existingItem = cart.find((item) => item.id === product?.id);
-  const [quantity, setQuantity] = useState(existingItem ? existingItem.quantity : 1);
+  // Save recently viewed product to localStorage
+  const saveRecentViewed = (item, userEmail) => {
+    const key = `recentViewed_${userEmail}`;
+    const stored = localStorage.getItem(key);
+    let recent = stored ? JSON.parse(stored) : [];
 
-  if (!product) return <h2 style={{ padding: "20px" }}>Product not found</h2>;
+    // Remove if already exists
+    recent = recent.filter((p) => p.id !== item.id);
+    // Add to front
+    recent.unshift(item);
+    // Keep max 10 items
+    if (recent.length > 10) recent = recent.slice(0, 10);
+
+    localStorage.setItem(key, JSON.stringify(recent));
+
+    // Notify ContinueShopping component
+    window.dispatchEvent(new Event("recentViewedUpdated"));
+  };
+
+  if (!product) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
 
   const handleAddToCart = () => addToCart({ ...product, quantity });
-
-  const handleRemove = () => removeFromCart(product.id);
-
-  const handlePlaceOrder = () => {
-    if (!isInCart(product.id)) addToCart({ ...product, quantity });
-    navigate("/checkout");
-  };
 
   return (
     <div className="product-details">
       <div className="product-details-card">
         <img src={product.image} alt={product.title} />
-
         <div className="product-info">
           <h2>{product.title}</h2>
           <p className="price">₹{product.price}</p>
-          <p className="desc">{product.description || "No description available."}</p>
 
           <div className="quantity-selector">
             <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
@@ -54,14 +73,10 @@ function ProductDetails() {
             )}
 
             {isInCart(product.id) && (
-              <button className="remove-cart" onClick={handleRemove}>
+              <button className="remove-cart" onClick={() => removeFromCart(product.id)}>
                 Remove
               </button>
             )}
-
-            <button className="place-order" onClick={handlePlaceOrder}>
-              Place Order
-            </button>
           </div>
         </div>
       </div>

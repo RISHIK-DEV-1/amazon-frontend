@@ -4,7 +4,7 @@ import "./Header.css";
 
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
-import products from "../../data/products";
+
 
 function Header() {
   const { cart } = useContext(CartContext);
