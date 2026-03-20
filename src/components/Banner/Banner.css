@@ -1,17 +1,59 @@
+/* ===== BANNER CONTAINER ===== */
+
 .banner {
-  width: 100vw;          /* full screen width */
+  width: 100%;
   overflow: hidden;
-  margin-top:5px;
+  margin-top: 5px;
+  position: relative;
 }
+
+
+/* ===== SLIDE TRACK ===== */
 
 .banner-track {
   display: flex;
   width: max-content;
+  touch-action: pan-y;
 }
 
+
+/* ===== BANNER IMAGE ===== */
+
 .banner-track img {
-  width: 100vw;          /* each banner full width */
-  height: 180px;
+  width: 100vw;
+  aspect-ratio: 720 / 436;   /* maintain original image ratio */
   object-fit: cover;
   flex-shrink: 0;
 }
+
+
+/* ===== RESPONSIVE IMPROVEMENTS ===== */
+
+/* Tablet */
+@media (min-width: 768px) {
+
+  .banner-track img {
+    max-height: 320px;
+  }
+
+}
+
+
+/* Laptop */
+@media (min-width: 1024px) {
+
+  .banner-track img {
+    max-height: 380px;
+  }
+
+}
+
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+
+  .banner-track img {
+    max-height: 450px;
+  }
+
+}	

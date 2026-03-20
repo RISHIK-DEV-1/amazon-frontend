@@ -1,67 +1,96 @@
 import { useParams } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import "./ProductDetails.css";
 import { CartContext } from "../context/CartContext";
-import { AuthContext, BASE_URL } from "../context/AuthContext"; // Added BASE_URL
+import { AuthContext, BASE_URL } from "../context/AuthContext";
 
 function ProductDetails() {
+
   const { id } = useParams();
-  const { addToCart, isInCart, removeFromCart, cart } = useContext(CartContext);
+  const { addToCart, isInCart, removeFromCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
+
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-  // Load product from backend
+  // ✅ Prevent duplicate history insert
+  const hasLogged = useRef(false);
+
   useEffect(() => {
+
     fetch(`${BASE_URL}/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
+
+        if (!data || !data.id) {
+          setProduct(null);
+          return;
+        }
+
         setProduct(data);
-        if (user) saveRecentViewed(data, user.email); // Save dynamically
+
+        // ✅ FIX: only log once
+        if (user && !hasLogged.current) {
+
+          hasLogged.current = true;
+
+          fetch(`${BASE_URL}/products/view/${user.id}/${data.id}`, {
+            method: "POST",
+          }).catch(() => {});
+        }
+
       })
-      .catch((err) => {
-        console.error("Error fetching product:", err);
-      });
-  }, [id, user]);
+      .catch(() => setProduct(null));
 
-  // Save recently viewed product to localStorage
-  const saveRecentViewed = (item, userEmail) => {
-    const key = `recentViewed_${userEmail}`;
-    const stored = localStorage.getItem(key);
-    let recent = stored ? JSON.parse(stored) : [];
+  }, [id, user, BASE_URL]);
 
-    // Remove if already exists
-    recent = recent.filter((p) => p.id !== item.id);
-    // Add to front
-    recent.unshift(item);
-    // Keep max 10 items
-    if (recent.length > 10) recent = recent.slice(0, 10);
+  if (!product) {
+    return <h2 style={{ padding: "20px" }}>Loading...</h2>;
+  }
 
-    localStorage.setItem(key, JSON.stringify(recent));
-
-    // Notify ContinueShopping component
-    window.dispatchEvent(new Event("recentViewedUpdated"));
+  const handleAddToCart = () => {
+    addToCart({ ...product, quantity });
   };
 
-  if (!product) return <h2 style={{ padding: "20px" }}>Loading...</h2>;
-
-  const handleAddToCart = () => addToCart({ ...product, quantity });
-
   return (
-    <div className="product-details">
+
+    <main className="product-details">
+
       <div className="product-details-card">
+
+        {/* IMAGE */}
         <img src={product.image} alt={product.title} />
+
+        {/* INFO */}
         <div className="product-info">
+
           <h2>{product.title}</h2>
+
           <p className="price">₹{product.price}</p>
 
-          <div className="quantity-selector">
-            <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>-</button>
-            <span>{quantity}</span>
-            <button onClick={() => setQuantity((q) => q + 1)}>+</button>
+          {/* ✅ DESCRIPTION */}
+          <p className="desc">{product.description}</p>
+
+          {/* ✅ FEATURES */}
+          <div className="features">
+            <h3>About this item</h3>
+            <ul>
+              {product.features?.split(",").map((f, i) => (
+                <li key={i}>✔ {f}</li>
+              ))}
+            </ul>
           </div>
 
+          {/* QUANTITY */}
+          <div className="quantity-selector">
+            <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
+            <span>{quantity}</span>
+            <button onClick={() => setQuantity(q => q + 1)}>+</button>
+          </div>
+
+          {/* ACTION BUTTONS */}
           <div className="action-buttons">
+
             {!isInCart(product.id) ? (
               <button className="add-cart" onClick={handleAddToCart}>
                 Add to Cart
@@ -73,14 +102,21 @@ function ProductDetails() {
             )}
 
             {isInCart(product.id) && (
-              <button className="remove-cart" onClick={() => removeFromCart(product.id)}>
+              <button
+                className="remove-cart"
+                onClick={() => removeFromCart(product.id)}
+              >
                 Remove
               </button>
             )}
+
           </div>
+
         </div>
+
       </div>
-    </div>
+
+    </main>
   );
 }
 

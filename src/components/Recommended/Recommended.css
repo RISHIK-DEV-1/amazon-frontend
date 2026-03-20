@@ -1,15 +1,20 @@
+/* ===== SECTION ===== */
+
 .recommended {
   background: #ffffff;
-  margin: 16px;
   padding: 16px;
-  border-radius: 4px;
+  margin-top: 16px;
+  border-radius: 6px;
+  width: 100%;
 }
+
+/* ===== HEADER ===== */
 
 .recommended-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .recommended-header h2 {
@@ -28,42 +33,49 @@
   color: #c7511f;
 }
 
+/* ===== SCROLL ROW ===== */
+
 .recommended-row {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   overflow-x: auto;
+  scroll-behavior: smooth;
   padding-bottom: 6px;
 }
 
 .recommended-row::-webkit-scrollbar {
-  height: 6px;
+  display: none;
 }
 
-.recommended-row::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 10px;
-}
+/* ===== CARD ===== */
 
 .recommended-card {
-  min-width: 150px;
-  max-width: 150px;
+  flex: 0 0 160px;
   cursor: pointer;
-  text-align: left;
+  transition: transform 0.15s ease;
 }
+
+.recommended-card:hover {
+  transform: translateY(-3px);
+}
+
+/* ===== IMAGE ===== */
 
 .recommended-card img {
   width: 100%;
   height: 150px;
   object-fit: contain;
   background: #f7f7f7;
-  padding: 8px;
+  padding: 10px;
   border-radius: 4px;
 }
+
+/* ===== TITLE ===== */
 
 .recommended-card .title {
   font-size: 14px;
   margin: 6px 0 4px;
-  line-height: 1.2;
+  line-height: 1.3;
   color: #0f1111;
 
   display: -webkit-box;
@@ -72,12 +84,48 @@
   overflow: hidden;
 }
 
+/* ===== PRICE ===== */
+
 .recommended-card .price {
   color: #b12704;
   font-size: 15px;
+  font-weight: bold;
 }
 
-.recommended-card:hover img {
-  transform: scale(1.03);
-  transition: transform 0.2s ease;
+/* ===== RESPONSIVE ===== */
+
+@media (min-width: 768px) {
+
+  .recommended-card {
+    flex: 0 0 190px;
+  }
+
+  .recommended-card img {
+    height: 170px;
+  }
+
+}
+
+@media (min-width: 1024px) {
+
+  .recommended-card {
+    flex: 0 0 220px;
+  }
+
+  .recommended-card img {
+    height: 190px;
+  }
+
+}
+
+@media (min-width: 1440px) {
+
+  .recommended-card {
+    flex: 0 0 240px;
+  }
+
+  .recommended-card img {
+    height: 210px;
+  }
+
 }

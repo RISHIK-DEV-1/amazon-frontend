@@ -1,9 +1,19 @@
 .cart-page {
+  flex: 1;                 /* ✅ IMPORTANT (push footer down) */
   padding: 16px;
   background: #eaeded;
-  min-height: 100vh;
 }
 
+/* EMPTY PAGE FIX */
+.cart-empty-page {
+  flex: 1;                 /* ✅ important */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eaeded;
+}
+
+/* CART ITEM */
 .cart-item {
   display: flex;
   gap: 12px;
@@ -26,6 +36,7 @@
   font-size: 14px;
 }
 
+/* QUANTITY */
 .qty {
   display: flex;
   align-items: center;
@@ -49,6 +60,7 @@
   text-align: center;
 }
 
+/* REMOVE BUTTON */
 .remove-btn {
   margin-top: 6px;
   padding: 6px 10px;
@@ -64,6 +76,7 @@
   background: #ff9999;
 }
 
+/* CHECKOUT BUTTON */
 .cart-page > button {
   width: 100%;
   margin-top: 16px;
@@ -80,7 +93,7 @@
   background: #f7ca00;
 }
 
-/* Added style for disabled "Added" button */
+/* OPTIONAL */
 .add-cart-btn.added {
   background-color: #d3d3d3;
   border: 1px solid #aaa;

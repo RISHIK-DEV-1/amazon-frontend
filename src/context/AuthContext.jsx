@@ -1,54 +1,97 @@
 import { createContext, useState, useEffect } from "react";
 
-// ---------- Add your Railway backend URL here ----------
+// ---------- Railway Backend URL ----------
 export const BASE_URL = "https://amazon-backend-production-219d.up.railway.app";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
+  // -------- LOAD USER SAFELY --------
   const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+    try {
+      const savedUser = localStorage.getItem("user");
+      if (!savedUser) return null;
 
-  const [token, setToken] = useState(() => {
-    const savedToken = localStorage.getItem("token");
-    return savedToken ? savedToken : null;
-  });
+      const parsed = JSON.parse(savedUser);
+      return parsed && typeof parsed === "object" ? parsed : null;
 
-  // Sync user with localStorage
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("user");
+    } catch {
+      return null;
     }
+  });
+
+  // -------- LOAD TOKEN SAFELY --------
+  const [token, setToken] = useState(() => {
+    try {
+      const savedToken = localStorage.getItem("token");
+      return savedToken || null;
+    } catch {
+      return null;
+    }
+  });
+
+  // -------- SYNC USER --------
+  useEffect(() => {
+
+    try {
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("user");
+      }
+    } catch {}
+
   }, [user]);
 
-  // Sync token with localStorage
+  // -------- SYNC TOKEN --------
   useEffect(() => {
-    if (token) {
-      localStorage.setItem("token", token);
-    } else {
-      localStorage.removeItem("token");
-    }
+
+    try {
+      if (token) {
+        localStorage.setItem("token", token);
+      } else {
+        localStorage.removeItem("token");
+      }
+    } catch {}
+
   }, [token]);
 
+  // -------- LOGIN --------
   const login = (data) => {
+    if (!data || !data.user) return;
     setUser(data.user);
-    setToken(data.token);
+    setToken(data.token || null);
   };
 
+  // -------- LOGOUT --------
   const logout = () => {
     setUser(null);
     setToken(null);
+    try {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+    } catch {}
   };
 
+  // -------- AUTH HEADERS --------
+  const authHeaders = () => ({
+    "Content-Type": "application/json",
+    Authorization: token ? `Bearer ${token}` : ""
+  });
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, BASE_URL }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        authHeaders,
+        BASE_URL
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
-

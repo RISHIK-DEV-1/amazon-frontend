@@ -1,9 +1,11 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import { AuthContext } from "../context/AuthContext";
 
 function Login() {
   const { login, BASE_URL } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +17,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [createAccount, setCreateAccount] = useState(false);
 
+  // LOGIN / CREATE ACCOUNT
   const handleSubmit = async () => {
     if (!email || !password) {
       setError("Email and password are required");
@@ -32,7 +35,9 @@ function Login() {
     try {
       const res = await fetch(`${BASE_URL}/auth`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           email,
           password,
@@ -47,10 +52,14 @@ function Login() {
         return;
       }
 
-      // Save user + token in AuthContext
+      // Save user + token
       login(data);
 
-      alert(`Welcome ${data.user?.name}`);
+      // Amazongo popup
+      window.alert(`amazongo says:\n\nWelcome ${data.user?.name}`);
+
+      // Redirect to home
+      navigate("/");
 
     } catch (err) {
       setError("Backend connection failed");
@@ -59,6 +68,7 @@ function Login() {
     }
   };
 
+  // RESET PASSWORD
   const handleResetPassword = async () => {
     if (!email || !newPassword) {
       setError("Enter email and new password");
@@ -68,7 +78,9 @@ function Login() {
     try {
       const res = await fetch(`${BASE_URL}/reset-password`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           email: email,
           new_password: newPassword
@@ -82,7 +94,8 @@ function Login() {
         return;
       }
 
-      alert("Password updated successfully");
+      window.alert("amazongo says:\n\nPassword updated successfully");
+
       setForgotMode(false);
       setNewPassword("");
 
@@ -103,7 +116,11 @@ function Login() {
       <div className="login-box">
 
         <h2>
-          {forgotMode ? "Reset Password" : createAccount ? "Create account" : "Sign in"}
+          {forgotMode
+            ? "Reset Password"
+            : createAccount
+            ? "Create account"
+            : "Sign in"}
         </h2>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
@@ -148,7 +165,11 @@ function Login() {
 
         {!forgotMode ? (
           <button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Processing..." : createAccount ? "Create Account" : "Login"}
+            {loading
+              ? "Processing..."
+              : createAccount
+              ? "Create Account"
+              : "Login"}
           </button>
         ) : (
           <button onClick={handleResetPassword}>

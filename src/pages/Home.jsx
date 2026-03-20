@@ -6,7 +6,7 @@ import ContinueShopping from "../components/ContinueShopping/ContinueShopping";
 
 function Home() {
   return (
-    <main style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <main className="home-container">
       <Categories />
       <Banner />
       <DealsOfDay />

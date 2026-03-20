@@ -1,9 +1,10 @@
 .product-details {
+  flex: 1;                 /* ✅ push footer down */
   padding: 20px;
   background: #eaeded;
-  min-height: calc(100vh - 140px);
 }
 
+/* CARD */
 .product-details-card {
   max-width: 1100px;
   margin: auto;
@@ -15,6 +16,7 @@
   flex-wrap: wrap;
 }
 
+/* IMAGE */
 .product-details-card img {
   width: 320px;
   object-fit: contain;
@@ -24,6 +26,7 @@
   background: #f9f9f9;
 }
 
+/* INFO */
 .product-info {
   flex: 1;
   min-width: 250px;
@@ -34,17 +37,41 @@
   font-size: 24px;
 }
 
+/* PRICE */
 .price {
   color: #b12704;
   font-size: 20px;
   margin-bottom: 12px;
 }
 
+/* DESCRIPTION (NEW) */
 .desc {
   color: #333;
   margin-bottom: 16px;
+  line-height: 1.5;
 }
 
+/* FEATURES SECTION (NEW) */
+.features {
+  margin-bottom: 16px;
+}
+
+.features h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.features ul {
+  padding-left: 18px;
+}
+
+.features li {
+  margin-bottom: 6px;
+  color: #111;
+  font-size: 14px;
+}
+
+/* QUANTITY */
 .quantity-selector {
   display: flex;
   align-items: center;
@@ -67,6 +94,7 @@
   font-weight: bold;
 }
 
+/* BUTTONS */
 .action-buttons {
   display: flex;
   gap: 12px;
@@ -81,6 +109,7 @@
   cursor: pointer;
 }
 
+/* ADD TO CART */
 .add-cart {
   background: #ffd814;
   border: 1px solid #fcd200;
@@ -90,17 +119,26 @@
   background: #f7ca00;
 }
 
-.place-order {
-  background: #ff9900;
-  border: 1px solid #f68b00;
+/* ADDED STATE */
+.add-cart.added {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
-.place-order:hover {
-  background: #e68a00;
+/* REMOVE */
+.remove-cart {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+}
+
+.remove-cart:hover {
+  background: #e60000;
 }
 
 /* MOBILE */
 @media (max-width: 768px) {
+
   .product-details-card {
     flex-direction: column;
     align-items: center;
@@ -109,20 +147,5 @@
   .product-details-card img {
     width: 220px;
   }
-}
-.success-msg {
-  margin-top: 12px;
-  padding: 8px 12px;
-  background-color: #d4edda;
-  color: #155724;
-  border-radius: 4px;
-  font-weight: bold;
-  animation: fadeInOut 2s ease forwards;
-}
 
-@keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-10px); }
-  20% { opacity: 1; transform: translateY(0); }
-  80% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
 }
