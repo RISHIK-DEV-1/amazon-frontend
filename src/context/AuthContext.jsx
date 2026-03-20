@@ -1,7 +1,11 @@
 import { createContext, useState, useEffect } from "react";
 
-// ---------- Railway Backend URL ----------
-export const BASE_URL = "https://amazon-backend-production-219d.up.railway.app";
+// ✅ DYNAMIC BASE URL
+export const BASE_URL =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1"
+    ? "http://127.0.0.1:8000"
+    : "https://amazon-backend-production-219d.up.railway.app";
 
 export const AuthContext = createContext();
 
@@ -33,7 +37,6 @@ export function AuthProvider({ children }) {
 
   // -------- SYNC USER --------
   useEffect(() => {
-
     try {
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
@@ -41,12 +44,10 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("user");
       }
     } catch {}
-
   }, [user]);
 
   // -------- SYNC TOKEN --------
   useEffect(() => {
-
     try {
       if (token) {
         localStorage.setItem("token", token);
@@ -54,7 +55,6 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("token");
       }
     } catch {}
-
   }, [token]);
 
   // -------- LOGIN --------
