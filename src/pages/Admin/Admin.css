@@ -1,0 +1,89 @@
+/* ---------------- MAIN LAYOUT ---------------- */
+.admin-container {
+  background: #f6f7f9;
+  min-height: 100vh;
+}
+
+/* ---------------- NAVBAR ---------------- */
+.admin-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #232f3e;
+  color: white;
+  padding: 12px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* TITLE */
+.admin-navbar h2 {
+  font-size: 18px;
+}
+
+/* NAV LINKS */
+.nav-links {
+  display: flex;
+  gap: 15px;
+}
+
+.admin-navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+/* ACTIVE + HOVER */
+.admin-navbar a.active,
+.admin-navbar a:hover {
+  background: #37475a;
+}
+
+/* ---------------- CONTENT ---------------- */
+.admin-content {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+/* ---------------- MOBILE ---------------- */
+@media (max-width: 768px) {
+
+  .admin-navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .nav-links {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .nav-links a {
+    white-space: nowrap;
+  }
+
+  .admin-content {
+    margin: 10px;
+  }
+}
+/* 🔥 GLOBAL FIX FOR ALL ADMIN PAGES */
+* {
+  box-sizing: border-box;
+}
+
+/* Prevent text overflow globally */
+.admin-content * {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Prevent flex/grid overflow issues */
+.admin-content {
+  min-width: 0;
+}

@@ -1,0 +1,142 @@
+/* ---------------- TABLE ---------------- */
+.admin-table {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.admin-row {
+  display: grid;
+  grid-template-columns: 55px 1fr 120px;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+  border: 1px solid #eee;
+}
+
+.admin-row:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.admin-row img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #f9f9f9;
+  padding: 4px;
+}
+
+/* INFO */
+.admin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-info strong {
+  font-size: 14px;
+}
+
+.admin-info span {
+  font-size: 13px;
+  color: #555;
+}
+
+.admin-info small {
+  font-size: 12px;
+  color: #888;
+}
+
+/* BUTTONS */
+.admin-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #ff9900;
+  color: white;
+}
+
+.delete-btn {
+  background: #f44336; /* 🔥 red for delete */
+  color: white;
+}
+
+/* HOVER */
+.edit-btn:hover {
+  background: #e68a00;
+}
+
+.delete-btn:hover {
+  background: #d32f2f; /* 🔥 darker red */
+}
+
+/* EMPTY */
+.empty-state {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+
+/* SUCCESS MESSAGE */
+.success-msg {
+  background: #4caf50;
+  color: white;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 13px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------- MOBILE ---------------- */
+@media (max-width: 768px) {
+  .admin-row {
+    grid-template-columns: 45px 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .admin-row img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .admin-actions {
+    grid-column: span 2;
+    justify-content: space-between;
+  }
+
+  .admin-actions button {
+    flex: 1;
+  }
+}

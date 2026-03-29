@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from "react";
 
-// ✅ DYNAMIC BASE URL
 export const BASE_URL =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
@@ -10,86 +9,54 @@ export const BASE_URL =
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-
-  // -------- LOAD USER SAFELY --------
   const [user, setUser] = useState(() => {
     try {
-      const savedUser = localStorage.getItem("user");
-      if (!savedUser) return null;
-
-      const parsed = JSON.parse(savedUser);
-      return parsed && typeof parsed === "object" ? parsed : null;
-
+      return JSON.parse(localStorage.getItem("user")) || null;
     } catch {
       return null;
     }
   });
 
-  // -------- LOAD TOKEN SAFELY --------
   const [token, setToken] = useState(() => {
-    try {
-      const savedToken = localStorage.getItem("token");
-      return savedToken || null;
-    } catch {
-      return null;
-    }
+    return localStorage.getItem("token") || null;
   });
 
-  // -------- SYNC USER --------
   useEffect(() => {
-    try {
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        localStorage.removeItem("user");
-      }
-    } catch {}
+    if (user) localStorage.setItem("user", JSON.stringify(user));
+    else localStorage.removeItem("user");
   }, [user]);
 
-  // -------- SYNC TOKEN --------
   useEffect(() => {
-    try {
-      if (token) {
-        localStorage.setItem("token", token);
-      } else {
-        localStorage.removeItem("token");
-      }
-    } catch {}
+    if (token) localStorage.setItem("token", token);
+    else localStorage.removeItem("token");
   }, [token]);
 
-  // -------- LOGIN --------
   const login = (data) => {
-    if (!data || !data.user) return;
     setUser(data.user);
-    setToken(data.token || null);
+    setToken(data.token);
   };
 
-  // -------- LOGOUT --------
   const logout = () => {
     setUser(null);
     setToken(null);
-    try {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-    } catch {}
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    window.location.href = "/login";
   };
 
-  // -------- AUTH HEADERS --------
-  const authHeaders = () => ({
-    "Content-Type": "application/json",
-    Authorization: token ? `Bearer ${token}` : ""
-  });
+  const authHeaders = () => {
+    const freshToken = localStorage.getItem("token");
+    return {
+      "Content-Type": "application/json",
+      ...(freshToken ? { Authorization: `Bearer ${freshToken}` } : {}),
+    };
+  };
+
+  const isAdmin = () => user?.role === "admin";
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        token,
-        login,
-        logout,
-        authHeaders,
-        BASE_URL
-      }}
+      value={{ user, token, login, logout, authHeaders, BASE_URL, isAdmin }}
     >
       {children}
     </AuthContext.Provider>

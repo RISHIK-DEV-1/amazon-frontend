@@ -217,3 +217,12 @@ inset:0;
 background:rgba(0,0,0,0.45);
 z-index:1100;
 }
+.header-orders {
+  margin-right: 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.header-orders:hover {
+  text-decoration: underline;
+}

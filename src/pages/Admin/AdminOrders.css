@@ -1,0 +1,174 @@
+.success-msg {
+  background: #4caf50;
+  color: white;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ROW */
+.admin-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 170px;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  transition: 0.2s;
+  overflow: hidden;
+}
+
+.admin-row:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.admin-row img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #f9f9f9;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+/* INFO */
+.admin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-info strong,
+.admin-info span,
+.admin-info small {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* ACTIONS */
+.admin-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+/* BUTTON BASE */
+.admin-actions button {
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+  color: white;
+}
+
+/* ================= COLORS ================= */
+
+/* SHIP */
+.ship-btn {
+  background: #ff9800;
+}
+.ship-btn:hover {
+  background: #e68900;
+}
+
+/* DELIVER */
+.deliver-btn {
+  background: #4caf50;
+}
+.deliver-btn:hover {
+  background: #3d8b40;
+}
+
+/* DELETE */
+.delete-btn {
+  background: #f44336;
+}
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+/* ================= DISABLED FIX ================= */
+/* 🔥 KEEP COLOR BUT FADE */
+.ship-btn:disabled {
+  background: #ff9800;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.deliver-btn:disabled {
+  background: #4caf50;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.delete-btn:disabled {
+  background: #f44336;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ================= STATUS BADGES ================= */
+.status-badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  width: fit-content;
+  color: white;
+  margin-top: 4px;
+}
+
+.status-badge.placed {
+  background: #ff9800;
+}
+
+.status-badge.shipped {
+  background: #2196f3;
+}
+
+.status-badge.delivered {
+  background: #4caf50;
+}
+
+/* EMPTY */
+.empty-state {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+
+  .admin-row {
+    grid-template-columns: 50px 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .admin-actions {
+    grid-column: span 2;
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .admin-actions button {
+    flex: 1;
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  .admin-row img {
+    width: 100%;
+    height: 120px;
+  }
+}

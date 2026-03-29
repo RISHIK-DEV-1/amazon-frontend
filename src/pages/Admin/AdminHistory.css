@@ -1,0 +1,49 @@
+/* TABLE WRAPPER (🔥 IMPORTANT FOR MOBILE) */
+.admin-table {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+
+  display: block;          /* 🔥 allow scroll */
+  overflow-x: auto;        /* 🔥 horizontal scroll */
+}
+
+/* TABLE CELLS */
+.admin-table th,
+.admin-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+
+  /* 🔥 FIX TEXT OVERFLOW */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 200px;
+}
+
+/* HEADER */
+.admin-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+/* ROW HOVER */
+.admin-table tr:hover {
+  background: #fafafa;
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+
+  .admin-table {
+    font-size: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    font-size: 12px;
+    padding: 6px 8px;
+    max-width: 140px; /* 🔥 prevent overlap */
+  }
+}

@@ -1,0 +1,191 @@
+/* ---------------- FORM ---------------- */
+.admin-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.admin-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.admin-card input:focus {
+  border-color: #ff9900;
+  outline: none;
+}
+
+/* BUTTON GROUP */
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.form-actions button {
+  flex: 1;
+  background: #ff9900;
+  border: none;
+  padding: 10px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* CANCEL BUTTON */
+.cancel-btn {
+  background: #ddd !important;
+  color: #333 !important;
+}
+
+.cancel-btn:hover {
+  background: #bbb !important;
+}
+
+/* ---------------- TABLE ---------------- */
+.admin-table {
+  margin-top: 20px;
+}
+
+/* 🔥 FIXED ROW */
+.admin-row {
+  display: grid;
+  grid-template-columns: 55px 1fr 120px;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+  border: 1px solid #eee;
+
+  overflow: hidden; /* 🔥 prevents overlap */
+}
+
+.admin-row:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.admin-row img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #f9f9f9;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+/* INFO */
+.admin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0; /* 🔥 CRITICAL FIX */
+}
+
+/* 🔥 TEXT WRAP FIX */
+.admin-info strong,
+.admin-info span,
+.admin-info small {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* BUTTONS */
+.admin-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+/* COLORS */
+.edit-btn {
+  background: #ff9900;
+  color: white;
+}
+
+.delete-btn {
+  background: #f44336;
+  color: white;
+}
+
+/* HOVER */
+.edit-btn:hover {
+  background: #e68a00;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+/* EMPTY */
+.empty-state {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+
+/* SUCCESS MESSAGE */
+.success-msg {
+  background: #4caf50;
+  color: white;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 13px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------- MOBILE ---------------- */
+@media (max-width: 768px) {
+
+  .admin-row {
+    grid-template-columns: 45px 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .admin-row img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .admin-actions {
+    grid-column: span 2;
+    display: flex;
+    gap: 6px;
+  }
+
+  .admin-actions button {
+    flex: 1;
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

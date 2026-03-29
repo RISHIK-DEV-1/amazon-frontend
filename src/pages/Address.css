@@ -1,40 +1,82 @@
+/* Address Page */
 .address-page {
-  padding: 20px;
   max-width: 600px;
-  margin: auto;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
 }
 
 .address-page h2 {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-.address-page textarea {
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 10px;
-  font-size: 14px;
-  border-radius: 4px;
+  padding: 8px 10px;
   border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
   resize: vertical;
 }
 
-.address-page button {
-  margin-top: 12px;
-  padding: 10px;
-  width: 100%;
-  background: #ffd814;
-  border: 1px solid #fcd200;
-  font-weight: bold;
-  cursor: pointer;
+textarea {
+  min-height: 80px;
 }
 
-.address-page button:hover {
-  background: #f7ca00;
+.save-btn {
+  padding: 10px 15px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.save-btn:hover {
+  background: #388e3c;
 }
 
 .saved-address {
   margin-top: 20px;
-  padding: 12px;
-  background: #f3f3f3;
+  padding: 15px;
+  background: #f9f9f9;
+  border-left: 4px solid #4caf50;
   border-radius: 6px;
+}
+
+.saved-address h4 {
+  margin-bottom: 10px;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .address-page {
+    padding: 15px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 13px;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
 }

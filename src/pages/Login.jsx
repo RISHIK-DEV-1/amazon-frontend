@@ -12,19 +12,19 @@ function Login() {
   const [name, setName] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [forgotMode, setForgotMode] = useState(false);
+  const [createAccount, setCreateAccount] = useState(false);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [createAccount, setCreateAccount] = useState(false);
 
   // LOGIN / CREATE ACCOUNT
   const handleSubmit = async () => {
-    if (!email || !password) {
+    if (!email.trim() || (!password && !forgotMode)) {
       setError("Email and password are required");
       return;
     }
 
-    if (createAccount && !name) {
+    if (createAccount && !name.trim()) {
       setError("Please enter your name");
       return;
     }
@@ -33,16 +33,13 @@ function Login() {
     setError("");
 
     try {
+      const payload = { email, password };
+      if (createAccount) payload.name = name;
+
       const res = await fetch(`${BASE_URL}/auth`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          name: createAccount ? name : undefined
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -52,16 +49,10 @@ function Login() {
         return;
       }
 
-      // Save user + token
       login(data);
-
-      // Amazongo popup
       window.alert(`amazongo says:\n\nWelcome ${data.user?.name}`);
-
-      // Redirect to home
       navigate("/");
-
-    } catch (err) {
+    } catch {
       setError("Backend connection failed");
     } finally {
       setLoading(false);
@@ -70,7 +61,7 @@ function Login() {
 
   // RESET PASSWORD
   const handleResetPassword = async () => {
-    if (!email || !newPassword) {
+    if (!email.trim() || !newPassword.trim()) {
       setError("Enter email and new password");
       return;
     }
@@ -78,13 +69,8 @@ function Login() {
     try {
       const res = await fetch(`${BASE_URL}/reset-password`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          new_password: newPassword
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, new_password: newPassword }),
       });
 
       const data = await res.json();
@@ -95,10 +81,8 @@ function Login() {
       }
 
       window.alert("amazongo says:\n\nPassword updated successfully");
-
       setForgotMode(false);
       setNewPassword("");
-
     } catch {
       setError("Backend connection failed");
     }
@@ -106,7 +90,6 @@ function Login() {
 
   return (
     <div className="login-page">
-
       <img
         className="login-logo"
         src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
@@ -114,7 +97,6 @@ function Login() {
       />
 
       <div className="login-box">
-
         <h2>
           {forgotMode
             ? "Reset Password"
@@ -127,8 +109,10 @@ function Login() {
 
         <label>Email</label>
         <input
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
 
         {!forgotMode && (
@@ -138,6 +122,7 @@ function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </>
         )}
@@ -149,6 +134,7 @@ function Login() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
+              required
             />
           </>
         )}
@@ -159,6 +145,7 @@ function Login() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </>
         )}
@@ -172,9 +159,7 @@ function Login() {
               : "Login"}
           </button>
         ) : (
-          <button onClick={handleResetPassword}>
-            Reset Password
-          </button>
+          <button onClick={handleResetPassword}>Reset Password</button>
         )}
 
         {!createAccount && !forgotMode && (
@@ -220,7 +205,6 @@ function Login() {
             )}
           </p>
         )}
-
       </div>
     </div>
   );
