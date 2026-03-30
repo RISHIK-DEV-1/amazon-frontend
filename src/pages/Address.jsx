@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import "./Address.css";
 
@@ -11,16 +11,33 @@ function Address() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
+  // ✅ track first load only
+  const hasPrefilled = useRef(false);
+
   const fetchAddress = () => {
     setLoading(true);
+
     fetch(`${BASE_URL}/address`, { headers: authHeaders() })
       .then((res) => {
         if (res.status === 401) return logout();
+
         if (!res.ok) throw new Error("Failed to fetch address");
         return res.json();
       })
-      .then((data) => setSaved(data))
-      .catch((err) => console.error(err))
+      .then((data) => {
+        setSaved(data);
+
+        // ✅ FIX: prefill only once
+        if (!hasPrefilled.current) {
+          setAddress(data.address || "");
+          setPincode(data.pincode || "");
+          hasPrefilled.current = true;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setSaved(null);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -46,9 +63,10 @@ function Address() {
       })
       .then(() => {
         setMessage("Address saved successfully!");
+
+        // ✅ refresh saved address
         fetchAddress();
-        setAddress("");
-        setPincode("");
+
         setTimeout(() => setMessage(""), 3000);
       })
       .catch((err) => {

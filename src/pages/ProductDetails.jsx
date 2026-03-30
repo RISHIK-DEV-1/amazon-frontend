@@ -35,6 +35,7 @@ function ProductDetails() {
           return;
         }
         setProduct(data);
+
         if (user && !hasLogged.current) {
           hasLogged.current = true;
           fetch(`${BASE_URL}/products/view/${user.id}/${data.id}`, {
@@ -72,9 +73,17 @@ function ProductDetails() {
       return;
     }
 
-    fetch(`${BASE_URL}/orders/${product.id}?amount=${expectedAmount}`, {
+    fetch(`${BASE_URL}/orders/${product.id}`, {
       method: "POST",
-      headers: authHeaders(),
+      headers: {
+        ...authHeaders(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: expectedAmount,
+        quantity,
+        payment_mode: paymentMode,
+      }),
     })
       .then((res) => {
         if (res.status === 401) return logout();
@@ -158,12 +167,14 @@ function ProductDetails() {
           <div className="payment-content">
             <h3>Payment</h3>
             <p>Total Amount: ₹{product.price * quantity}</p>
+
             <input
               type="number"
               value={paymentAmount}
               onChange={(e) => setPaymentAmount(e.target.value)}
               placeholder="Enter amount"
             />
+
             <div className="payment-modes">
               <label>
                 <input

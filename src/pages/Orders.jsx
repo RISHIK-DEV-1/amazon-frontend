@@ -19,10 +19,7 @@ function Orders() {
         return res.json();
       })
       .then((data) => setOrders(data || []))
-      .catch((err) => {
-        console.error(err);
-        setOrders([]);
-      })
+      .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   };
 
@@ -98,7 +95,9 @@ function Orders() {
                     </button>
                   )}
 
-                  <button onClick={() => navigate(`/invoice/${o.id}`)}>View Invoice</button>
+                  <button onClick={() => navigate(`/invoice/${o.invoice_id}`)}>
+                    View Invoice
+                  </button>
                 </div>
 
                 {openOrder === o.id && (
@@ -107,7 +106,6 @@ function Orders() {
                       timeline.map((t, i) => (
                         <div key={i} className="timeline-item">
                           <span className={`dot ${t.status || "placed"}`}></span>
-
                           <div>
                             <strong>{(t.status || "placed").toUpperCase()}</strong>
                             <small>

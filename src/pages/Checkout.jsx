@@ -1,11 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 
 function Checkout() {
   const { cart, clearCart, markOrdered } = useContext(CartContext);
   const { BASE_URL, authHeaders, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [orderItems, setOrderItems] = useState([]);
@@ -13,8 +15,22 @@ function Checkout() {
   const [paymentMode, setPaymentMode] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
-  const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("");
+  // ✅ NEW: saved address
+  const [savedAddress, setSavedAddress] = useState(null);
+  const [loadingAddress, setLoadingAddress] = useState(true);
+
+  // ✅ FETCH SAVED ADDRESS
+  useEffect(() => {
+    fetch(`${BASE_URL}/address`, { headers: authHeaders() })
+      .then((res) => {
+        if (res.status === 401) return logout();
+        if (!res.ok) throw new Error("No address");
+        return res.json();
+      })
+      .then((data) => setSavedAddress(data))
+      .catch(() => setSavedAddress(null))
+      .finally(() => setLoadingAddress(false));
+  }, []);
 
   if (cart.length === 0 && !showSuccess) {
     return (
@@ -42,8 +58,6 @@ function Checkout() {
             quantity: item.quantity,
             amount: item.quantity * Number(item.price),
           })),
-          address,
-          pincode,
           payment_mode: paymentMode,
         }),
       });
@@ -56,9 +70,6 @@ function Checkout() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Order failed");
 
-      if (!data.invoice_id) throw new Error("Invoice ID missing from backend");
-
-      // Navigate to invoice page
       window.location.href = `/invoice/${data.invoice_id}`;
 
       markOrdered(cart);
@@ -69,8 +80,7 @@ function Checkout() {
         setShowSuccess(false);
       }, 2500);
     } catch (err) {
-      console.error(err);
-      setPaymentError(err.message || "Order failed. Please try again.");
+      setPaymentError(err.message || "Order failed");
     }
   };
 
@@ -80,6 +90,36 @@ function Checkout() {
     <div className="checkout-page">
       <h2>Order Summary</h2>
 
+      {/* ✅ ADDRESS SECTION */}
+      <div className="checkout-address-box">
+        <h3>Delivery Address</h3>
+
+        {loadingAddress ? (
+          <p>Loading address...</p>
+        ) : savedAddress ? (
+          <>
+            <p>
+              <b>Address:</b> {savedAddress.address}
+            </p>
+            <p>
+              <b>Pincode:</b> {savedAddress.pincode}
+            </p>
+
+            <button onClick={() => navigate("/address")}>
+              Change Address
+            </button>
+          </>
+        ) : (
+          <>
+            <p style={{ color: "red" }}>No address found</p>
+            <button onClick={() => navigate("/address")}>
+              Add Address
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* PRODUCTS */}
       {displayItems.map((item) => (
         <div key={item.id} className="checkout-item">
           <img src={item.image} alt={item.title} />
@@ -94,7 +134,9 @@ function Checkout() {
 
       <h3>Total: ₹{total}</h3>
 
-      <button onClick={() => setPaymentOpen(true)}>Proceed to Payment</button>
+      <button onClick={() => setPaymentOpen(true)}>
+        Proceed to Payment
+      </button>
 
       {showSuccess && (
         <div className="success-msg">✓ Your order placed successfully</div>
@@ -104,27 +146,16 @@ function Checkout() {
       {paymentOpen && (
         <div className="payment-modal">
           <div className="payment-content">
-            <h3>Payment & Address</h3>
+            <h3>Payment</h3>
             <p>Total: ₹{total}</p>
 
-            <label>
-              Address:
-              <textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Enter delivery address"
-              />
-            </label>
-
-            <label>
-              Pincode:
-              <input
-                type="text"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-                placeholder="Enter pincode"
-              />
-            </label>
+            {/* SHOW ADDRESS AGAIN */}
+            {savedAddress && (
+              <div className="mini-address">
+                <p>{savedAddress.address}</p>
+                <p>{savedAddress.pincode}</p>
+              </div>
+            )}
 
             <div className="payment-modes">
               <label>
@@ -161,10 +192,12 @@ function Checkout() {
                   setPaymentError("Select payment method");
                   return;
                 }
-                if (!address || !pincode) {
-                  setPaymentError("Provide address and pincode");
+
+                if (!savedAddress) {
+                  setPaymentError("Add address first");
                   return;
                 }
+
                 setPaymentOpen(false);
                 handlePlaceOrder();
               }}
