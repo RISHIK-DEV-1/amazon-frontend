@@ -60,6 +60,12 @@ function Orders() {
           const status = o.status || "placed";
           const timeline = Array.isArray(o.timeline) ? o.timeline : [];
 
+          // ✅ PARSE STRUCTURED ADDRESS
+          let addr = {};
+          try {
+            addr = JSON.parse(o.address || "{}");
+          } catch {}
+
           return (
             <div className="order-card" key={o.id}>
               <img src={o.image || "/placeholder.png"} alt={o.title || "Product"} />
@@ -76,8 +82,10 @@ function Orders() {
                     : "Unknown date"}
                 </small>
 
+                {/* ✅ SHORT ADDRESS (UPDATED ONLY THIS PART) */}
                 <p>
-                  <b>Delivery:</b> {o.address || "Not Provided"} ({o.pincode || "-"})
+                  <b>Delivery:</b>{" "}
+                  {addr.city ? `${addr.city} - ${addr.pincode}` : "Not Provided"}
                 </p>
 
                 <p>
@@ -106,6 +114,7 @@ function Orders() {
                       timeline.map((t, i) => (
                         <div key={i} className="timeline-item">
                           <span className={`dot ${t.status || "placed"}`}></span>
+
                           <div>
                             <strong>{(t.status || "placed").toUpperCase()}</strong>
                             <small>

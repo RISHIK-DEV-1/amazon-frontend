@@ -31,26 +31,60 @@ function Invoice() {
 
   if (loading)
     return <p style={{ textAlign: "center", marginTop: 20 }}>Loading invoice...</p>;
+
   if (error)
     return (
-      <p style={{ textAlign: "center", marginTop: 20, color: "red" }}>{error}</p>
+      <p style={{ textAlign: "center", marginTop: 20, color: "red" }}>
+        {error}
+      </p>
     );
+
+  // ✅ PARSE STRUCTURED ADDRESS SAFELY
+  let addr = {};
+  try {
+    addr = JSON.parse(invoice.address || "{}");
+  } catch {
+    addr = {};
+  }
 
   return (
     <div className="invoice-page">
       <h2>Invoice #{invoice.id}</h2>
+
       <p><strong>Order ID:</strong> {invoice.order_id}</p>
       <p><strong>Placed by:</strong> {invoice.username || "N/A"}</p>
       <p><strong>Total Amount:</strong> ₹{invoice.total_amount ?? "N/A"}</p>
       <p><strong>Payment Mode:</strong> {invoice.payment_mode || "N/A"}</p>
-      <p><strong>Created At:</strong> {invoice.created_at ? new Date(invoice.created_at).toLocaleString() : "Unknown"}</p>
 
-      <h3>Delivery Address</h3>
       <p>
-        {invoice.address?.trim() || "N/A"}, {invoice.pincode?.trim() || "N/A"}
+        <strong>Created At:</strong>{" "}
+        {invoice.created_at
+          ? new Date(invoice.created_at).toLocaleString()
+          : "Unknown"}
       </p>
 
+      <h3>Delivery Address</h3>
+
+      {invoice.address ? (
+        <div className="invoice-address">
+          <p><strong>{addr.name || "N/A"}</strong></p>
+          <p>
+            {(addr.house || "")}
+            {addr.area ? `, ${addr.area}` : ""}
+          </p>
+          <p>
+            {(addr.city || "")}
+            {addr.state ? `, ${addr.state}` : ""}{" "}
+            {addr.pincode ? `- ${addr.pincode}` : ""}
+          </p>
+          {addr.phone && <p>Phone: {addr.phone}</p>}
+        </div>
+      ) : (
+        <p>N/A</p>
+      )}
+
       <h3>Products</h3>
+
       {invoice.products.length > 0 ? (
         <table className="invoice-products">
           <thead>

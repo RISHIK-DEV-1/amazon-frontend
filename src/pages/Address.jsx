@@ -5,14 +5,25 @@ import "./Address.css";
 function Address() {
   const { BASE_URL, authHeaders, logout } = useContext(AuthContext);
 
-  const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    house: "",
+    area: "",
+    city: "",
+    state: "",
+    pincode: "",
+    phone: "",
+  });
+
   const [saved, setSaved] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  // ✅ track first load only
   const hasPrefilled = useRef(false);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const fetchAddress = () => {
     setLoading(true);
@@ -20,23 +31,22 @@ function Address() {
     fetch(`${BASE_URL}/address`, { headers: authHeaders() })
       .then((res) => {
         if (res.status === 401) return logout();
-
-        if (!res.ok) throw new Error("Failed to fetch address");
         return res.json();
       })
       .then((data) => {
-        setSaved(data);
+        if (data?.address) {
+          try {
+            const parsed = JSON.parse(data.address);
+            setSaved(parsed);
 
-        // ✅ FIX: prefill only once
-        if (!hasPrefilled.current) {
-          setAddress(data.address || "");
-          setPincode(data.pincode || "");
-          hasPrefilled.current = true;
+            if (!hasPrefilled.current) {
+              setForm(parsed);
+              hasPrefilled.current = true;
+            }
+          } catch {
+            setSaved(null);
+          }
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        setSaved(null);
       })
       .finally(() => setLoading(false));
   };
@@ -46,57 +56,38 @@ function Address() {
   }, []);
 
   const saveAddress = () => {
-    if (!address.trim() || !pincode.trim()) {
-      alert("Enter address & pincode");
+    if (!form.name || !form.house || !form.city || !form.pincode) {
+      alert("Fill required fields");
       return;
     }
 
     fetch(`${BASE_URL}/address`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ address, pincode }),
+      body: JSON.stringify({
+        address: JSON.stringify(form),
+        pincode: form.pincode,
+      }),
     })
-      .then((res) => {
-        if (res.status === 401) return logout();
-        if (!res.ok) throw new Error("Failed to save address");
-        return res.json();
-      })
       .then(() => {
         setMessage("Address saved successfully!");
-
-        // ✅ refresh saved address
         fetchAddress();
-
         setTimeout(() => setMessage(""), 3000);
       })
-      .catch((err) => {
-        console.error(err);
-        alert(err.message || "Failed to save address");
-      });
+      .catch(() => alert("Failed to save address"));
   };
 
   return (
     <div className="address-page">
       <h2>Delivery Address</h2>
 
-      <div className="form-group">
-        <label>Address</label>
-        <textarea
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Enter your delivery address"
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Pincode</label>
-        <input
-          type="text"
-          value={pincode}
-          onChange={(e) => setPincode(e.target.value)}
-          placeholder="Enter pincode"
-        />
-      </div>
+      <input name="name" placeholder="Full Name" value={form.name} onChange={handleChange} />
+      <input name="house" placeholder="House / Flat" value={form.house} onChange={handleChange} />
+      <input name="area" placeholder="Area / Street" value={form.area} onChange={handleChange} />
+      <input name="city" placeholder="City" value={form.city} onChange={handleChange} />
+      <input name="state" placeholder="State" value={form.state} onChange={handleChange} />
+      <input name="pincode" placeholder="Pincode" value={form.pincode} onChange={handleChange} />
+      <input name="phone" placeholder="Phone" value={form.phone} onChange={handleChange} />
 
       <button className="save-btn" onClick={saveAddress}>
         Save Address
@@ -106,15 +97,13 @@ function Address() {
 
       {loading ? (
         <p>Loading saved address...</p>
-      ) : saved?.address ? (
+      ) : saved ? (
         <div className="saved-address">
           <h4>Saved Address:</h4>
-          <p>
-            <strong>Address:</strong> {saved.address}
-          </p>
-          <p>
-            <strong>Pincode:</strong> {saved.pincode}
-          </p>
+          <p>{saved.name}</p>
+          <p>{saved.house}, {saved.area}</p>
+          <p>{saved.city}, {saved.state} - {saved.pincode}</p>
+          <p>Phone: {saved.phone}</p>
         </div>
       ) : (
         <p>No saved address yet</p>
