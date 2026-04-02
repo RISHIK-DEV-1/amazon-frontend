@@ -11,6 +11,8 @@ export function CartProvider({ children }) {
     }
   });
 
+  const [selectedItems, setSelectedItems] = useState([]);
+
   const [orderedItems, setOrderedItems] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("ordered")) || [];
@@ -30,6 +32,7 @@ export function CartProvider({ children }) {
   const isInCart = (id) => cart.some((item) => item.id === id);
   const isOrdered = (id) => orderedItems.includes(id);
 
+  // ADD TO CART
   const addToCart = (product) => {
     setCart((prev) => {
       if (prev.find((item) => item.id === product.id)) return prev;
@@ -37,6 +40,7 @@ export function CartProvider({ children }) {
     });
   };
 
+  // QUANTITY
   const increaseQty = (id) => {
     setCart((prev) =>
       prev.map((item) =>
@@ -55,9 +59,31 @@ export function CartProvider({ children }) {
     );
   };
 
+  // REMOVE
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((item) => item.id !== id));
+
+    // also remove from selected
+    setSelectedItems((prev) => prev.filter((item) => item.id !== id));
   };
+
+  // ✅ FIX: STORE FULL PRODUCT
+  const toggleSelect = (product) => {
+    setSelectedItems((prev) => {
+      const exists = prev.find((item) => item.id === product.id);
+
+      if (exists) {
+        return prev.filter((item) => item.id !== product.id);
+      } else {
+        return [...prev, product]; // ✅ FULL OBJECT
+      }
+    });
+  };
+
+  const isSelected = (id) =>
+    selectedItems.some((item) => item.id === id);
+
+  const clearSelected = () => setSelectedItems([]);
 
   const clearCart = () => setCart([]);
 
@@ -70,11 +96,17 @@ export function CartProvider({ children }) {
     <CartContext.Provider
       value={{
         cart,
+        selectedItems,
+        toggleSelect,
+        isSelected,
+        clearSelected,
+
         addToCart,
         increaseQty,
         decreaseQty,
         removeFromCart,
         clearCart,
+
         isInCart,
         markOrdered,
         isOrdered,

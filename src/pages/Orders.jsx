@@ -18,7 +18,31 @@ function Orders() {
         if (res.status === 401) return logout();
         return res.json();
       })
-      .then((data) => setOrders(data || []))
+      .then((data) => {
+        const grouped = {};
+
+        (data || []).forEach((o) => {
+          const key = o.invoice_id || o.id;
+
+          if (!grouped[key]) {
+            grouped[key] = {
+              items: [],
+              base: o,
+            };
+          }
+
+          grouped[key].items.push(o);
+        });
+
+        // ✅ FIX: SORT AFTER GROUPING (LATEST FIRST)
+        const groupedArray = Object.values(grouped).sort((a, b) => {
+          const dateA = new Date(a.base.created_at || 0);
+          const dateB = new Date(b.base.created_at || 0);
+          return dateB - dateA;
+        });
+
+        setOrders(groupedArray);
+      })
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   };
@@ -27,8 +51,8 @@ function Orders() {
     fetchOrders();
   }, []);
 
-  const toggleTimeline = (orderId) => {
-    setOpenOrder(openOrder === orderId ? null : orderId);
+  const toggleTimeline = (id) => {
+    setOpenOrder(openOrder === id ? null : id);
   };
 
   const cancelOrder = (id) => {
@@ -56,25 +80,131 @@ function Orders() {
       {orders.length === 0 ? (
         <p className="empty">No orders yet</p>
       ) : (
-        orders.map((o) => {
+        orders.map((group, index) => {
+          const items = group.items;
+          const o = group.base;
+
           const status = o.status || "placed";
           const timeline = Array.isArray(o.timeline) ? o.timeline : [];
 
-          // ✅ PARSE STRUCTURED ADDRESS
           let addr = {};
           try {
             addr = JSON.parse(o.address || "{}");
           } catch {}
 
+          // ✅ SINGLE PRODUCT (UNCHANGED)
+          if (items.length === 1) {
+            return (
+              <div className="order-card" key={o.id}>
+                <img src={o.image || "/placeholder.png"} alt={o.title} />
+
+                <div className="order-info">
+                  <strong>{o.title}</strong>
+                  <span>₹{o.price}</span>
+
+                  <span className={`status ${status}`}>
+                    {status.toUpperCase()}
+                  </span>
+
+                  <small>
+                    {o.created_at
+                      ? new Date(o.created_at).toLocaleString()
+                      : "Unknown date"}
+                  </small>
+
+                  <p>
+                    <b>Delivery:</b>{" "}
+                    {addr.city
+                      ? `${addr.city} - ${addr.pincode}`
+                      : "Not Provided"}
+                  </p>
+
+                  <p>
+                    <b>Payment Mode:</b> {o.payment_mode || "Not Provided"}
+                  </p>
+
+                  <div className="order-actions">
+                    <button onClick={() => toggleTimeline(o.id)}>
+                      {openOrder === o.id
+                        ? "Hide Timeline"
+                        : "View Timeline"}
+                    </button>
+
+                    {status !== "delivered" && status !== "cancelled" && (
+                      <button
+                        className="cancel-btn"
+                        onClick={() => cancelOrder(o.id)}
+                      >
+                        Cancel
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() =>
+                        navigate(`/invoice/${o.invoice_id}`)
+                      }
+                    >
+                      View Invoice
+                    </button>
+                  </div>
+
+                  {openOrder === o.id && (
+                    <div className="timeline">
+                      {timeline.length > 0 ? (
+                        timeline.map((t, i) => (
+                          <div key={i} className="timeline-item">
+                            <span className={`dot ${t.status || "placed"}`}></span>
+                            <div>
+                              <strong>
+                                {(t.status || "placed").toUpperCase()}
+                              </strong>
+                              <small>
+                                {t.created_at
+                                  ? new Date(t.created_at).toLocaleString()
+                                  : "Unknown date"}
+                              </small>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="empty">No timeline available</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          // ✅ MULTIPLE PRODUCTS (UNCHANGED UI)
           return (
-            <div className="order-card" key={o.id}>
-              <img src={o.image || "/placeholder.png"} alt={o.title || "Product"} />
+            <div className="order-card" key={index}>
+              <div style={{ display: "flex", gap: "6px" }}>
+                {items.slice(0, 3).map((p, i) => (
+                  <img
+                    key={i}
+                    src={p.image || "/placeholder.png"}
+                    alt={p.title}
+                    style={{ width: "60px", height: "60px", objectFit: "contain" }}
+                  />
+                ))}
+                {items.length > 3 && <span>+{items.length - 3}</span>}
+              </div>
 
               <div className="order-info">
-                <strong>{o.title || "Unknown Product"}</strong>
-                <span>₹{o.price ?? "N/A"}</span>
+                <strong>{items.length} items</strong>
 
-                <span className={`status ${status}`}>{status.toUpperCase()}</span>
+                <span>
+                  ₹
+                  {items.reduce(
+                    (sum, i) => sum + i.price * i.quantity,
+                    0
+                  )}
+                </span>
+
+                <span className={`status ${status}`}>
+                  {status.toUpperCase()}
+                </span>
 
                 <small>
                   {o.created_at
@@ -82,10 +212,11 @@ function Orders() {
                     : "Unknown date"}
                 </small>
 
-                {/* ✅ SHORT ADDRESS (UPDATED ONLY THIS PART) */}
                 <p>
                   <b>Delivery:</b>{" "}
-                  {addr.city ? `${addr.city} - ${addr.pincode}` : "Not Provided"}
+                  {addr.city
+                    ? `${addr.city} - ${addr.pincode}`
+                    : "Not Provided"}
                 </p>
 
                 <p>
@@ -93,43 +224,20 @@ function Orders() {
                 </p>
 
                 <div className="order-actions">
-                  <button onClick={() => toggleTimeline(o.id)}>
-                    {openOrder === o.id ? "Hide Timeline" : "View Timeline"}
+                  <button onClick={() => toggleTimeline(o.invoice_id)}>
+                    {openOrder === o.invoice_id
+                      ? "Hide Timeline"
+                      : "View Timeline"}
                   </button>
 
-                  {status !== "delivered" && status !== "cancelled" && (
-                    <button className="cancel-btn" onClick={() => cancelOrder(o.id)}>
-                      Cancel
-                    </button>
-                  )}
-
-                  <button onClick={() => navigate(`/invoice/${o.invoice_id}`)}>
+                  <button
+                    onClick={() =>
+                      navigate(`/invoice/${o.invoice_id}`)
+                    }
+                  >
                     View Invoice
                   </button>
                 </div>
-
-                {openOrder === o.id && (
-                  <div className="timeline">
-                    {timeline.length > 0 ? (
-                      timeline.map((t, i) => (
-                        <div key={i} className="timeline-item">
-                          <span className={`dot ${t.status || "placed"}`}></span>
-
-                          <div>
-                            <strong>{(t.status || "placed").toUpperCase()}</strong>
-                            <small>
-                              {t.created_at
-                                ? new Date(t.created_at).toLocaleString()
-                                : "Unknown date"}
-                            </small>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="empty">No timeline available</p>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           );
