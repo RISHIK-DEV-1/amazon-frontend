@@ -13,13 +13,17 @@ function Recommended() {
     fetch(`${BASE_URL}/products/category/recommended`)
       .then(res => res.json())
       .then(data => {
-        if (isMounted && Array.isArray(data)) setRecommended(data);
+        if (isMounted && Array.isArray(data)) {
+          setRecommended(data);
+        }
       })
       .catch(() => {
         if (isMounted) setRecommended([]);
       });
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (!recommended) return null;
@@ -28,8 +32,12 @@ function Recommended() {
     <section className="recommended">
       <div className="recommended-header">
         <h2>Recommended for You</h2>
+
         {recommended.length > 0 && (
-          <span className="see-all" onClick={() => navigate("/products/recommended")}>
+          <span
+            className="see-all"
+            onClick={() => navigate("/products/recommended")}
+          >
             See all
           </span>
         )}
@@ -37,9 +45,11 @@ function Recommended() {
 
       <div className="recommended-row">
         {recommended.length === 0 ? (
-          <p style={{ padding: "20px", color: "#555" }}>No recommendations available.</p>
+          <p style={{ padding: "20px", color: "#555" }}>
+            No recommendations available.
+          </p>
         ) : (
-          recommended.slice(0, 10).map((item) => (
+          recommended.map((item) => (
             <div
               key={item.id}
               className="recommended-card"
