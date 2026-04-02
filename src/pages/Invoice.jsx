@@ -49,9 +49,20 @@ function Invoice() {
 
   return (
     <div className="invoice-page">
-      <h2>Invoice #{invoice.id}</h2>
+      <h2>
+  Invoice #INV-{String(invoice.id).padStart(6, "0")}
+</h2>
 
-      <p><strong>Order ID:</strong> {invoice.order_id}</p>
+      {/* ✅ FIXED ORDER ID */}
+      <p>
+  <strong>Order ID:</strong>{" "}
+  {invoice.order_ids?.length > 0
+    ? invoice.order_ids.length === 1
+      ? `ORD-${invoice.order_ids[0]}`
+      : `ORD-${invoice.order_ids[0]} +${invoice.order_ids.length - 1} more`
+    : "N/A"}
+</p>
+
       <p><strong>Placed by:</strong> {invoice.username || "N/A"}</p>
       <p><strong>Total Amount:</strong> ₹{invoice.total_amount ?? "N/A"}</p>
       <p><strong>Payment Mode:</strong> {invoice.payment_mode || "N/A"}</p>

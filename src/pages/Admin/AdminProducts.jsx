@@ -104,12 +104,25 @@ function AdminProducts() {
       <div className="admin-card">
 
         {Object.keys(form).map(key => (
-          <input
-            key={key}
-            placeholder={key}
-            value={form[key]}
-            onChange={e => setForm({ ...form, [key]: e.target.value })}
-          />
+          key === "category" ? (
+            // ✅ DROPDOWN ADDED ONLY HERE
+            <select
+              key={key}
+              value={form[key]}
+              onChange={e => setForm({ ...form, [key]: e.target.value })}
+            >
+              <option value="">Select Category</option>
+              <option value="deals">Deals</option>
+              <option value="recommended">Recommended</option>
+            </select>
+          ) : (
+            <input
+              key={key}
+              placeholder={key}
+              value={form[key]}
+              onChange={e => setForm({ ...form, [key]: e.target.value })}
+            />
+          )
         ))}
 
         {/* BUTTON GROUP */}
