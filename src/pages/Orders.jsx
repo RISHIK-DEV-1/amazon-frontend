@@ -34,7 +34,7 @@ function Orders() {
           grouped[key].items.push(o);
         });
 
-        // ✅ FIX: SORT AFTER GROUPING (LATEST FIRST)
+        // Sort latest orders first
         const groupedArray = Object.values(grouped).sort((a, b) => {
           const dateA = new Date(a.base.created_at || 0);
           const dateB = new Date(b.base.created_at || 0);
@@ -83,7 +83,6 @@ function Orders() {
         orders.map((group, index) => {
           const items = group.items;
           const o = group.base;
-
           const status = o.status || "placed";
           const timeline = Array.isArray(o.timeline) ? o.timeline : [];
 
@@ -92,120 +91,27 @@ function Orders() {
             addr = JSON.parse(o.address || "{}");
           } catch {}
 
-          // ✅ SINGLE PRODUCT (UNCHANGED)
-          if (items.length === 1) {
-            return (
-              <div className="order-card" key={o.id}>
-                <img src={o.image || "/placeholder.png"} alt={o.title} />
-
-                <div className="order-info">
-                  <strong>{o.title}</strong>
-                  <span>₹{o.price}</span>
-
-                  <span className={`status ${status}`}>
-                    {status.toUpperCase()}
-                  </span>
-
-                  <small>
-                    {o.created_at
-                      ? new Date(o.created_at).toLocaleString()
-                      : "Unknown date"}
-                  </small>
-
-                  <p>
-                    <b>Delivery:</b>{" "}
-                    {addr.city
-                      ? `${addr.city} - ${addr.pincode}`
-                      : "Not Provided"}
-                  </p>
-
-                  <p>
-                    <b>Payment Mode:</b> {o.payment_mode || "Not Provided"}
-                  </p>
-
-                  <div className="order-actions">
-                    <button onClick={() => toggleTimeline(o.id)}>
-                      {openOrder === o.id
-                        ? "Hide Timeline"
-                        : "View Timeline"}
-                    </button>
-
-                    {status !== "delivered" && status !== "cancelled" && (
-                      <button
-                        className="cancel-btn"
-                        onClick={() => cancelOrder(o.id)}
-                      >
-                        Cancel
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() =>
-                        navigate(`/invoice/${o.invoice_id}`)
-                      }
-                    >
-                      View Invoice
-                    </button>
-                  </div>
-
-                  {openOrder === o.id && (
-                    <div className="timeline">
-                      {timeline.length > 0 ? (
-                        timeline.map((t, i) => (
-                          <div key={i} className="timeline-item">
-                            <span className={`dot ${t.status || "placed"}`}></span>
-                            <div>
-                              <strong>
-                                {(t.status || "placed").toUpperCase()}
-                              </strong>
-                              <small>
-                                {t.created_at
-                                  ? new Date(t.created_at).toLocaleString()
-                                  : "Unknown date"}
-                              </small>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="empty">No timeline available</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          }
-
-          // ✅ MULTIPLE PRODUCTS (UNCHANGED UI)
           return (
-            <div className="order-card" key={index}>
-              <div style={{ display: "flex", gap: "6px" }}>
-                {items.slice(0, 3).map((p, i) => (
+            <div className="order-card" key={o.invoice_id || index}>
+              {/* MULTIPLE PRODUCT IMAGES */}
+              <div className="order-images" style={{ display: "flex", gap: "6px" }}>
+                {items.map((p, i) => (
                   <img
                     key={i}
                     src={p.image || "/placeholder.png"}
-                    alt={p.title}
+                    alt={p.title || "Product"}
                     style={{ width: "60px", height: "60px", objectFit: "contain" }}
                   />
                 ))}
-                {items.length > 3 && <span>+{items.length - 3}</span>}
               </div>
 
               <div className="order-info">
-                <strong>{items.length} items</strong>
-
+                <strong>{items.length} item{items.length > 1 ? "s" : ""}</strong>
                 <span>
                   ₹
-                  {items.reduce(
-                    (sum, i) => sum + i.price * i.quantity,
-                    0
-                  )}
+                  {items.reduce((sum, i) => sum + i.price * i.quantity, 0)}
                 </span>
-
-                <span className={`status ${status}`}>
-                  {status.toUpperCase()}
-                </span>
-
+                <span className={`status ${status}`}>{status.toUpperCase()}</span>
                 <small>
                   {o.created_at
                     ? new Date(o.created_at).toLocaleString()
@@ -214,9 +120,7 @@ function Orders() {
 
                 <p>
                   <b>Delivery:</b>{" "}
-                  {addr.city
-                    ? `${addr.city} - ${addr.pincode}`
-                    : "Not Provided"}
+                  {addr.city ? `${addr.city} - ${addr.pincode}` : "Not Provided"}
                 </p>
 
                 <p>
@@ -225,19 +129,45 @@ function Orders() {
 
                 <div className="order-actions">
                   <button onClick={() => toggleTimeline(o.invoice_id)}>
-                    {openOrder === o.invoice_id
-                      ? "Hide Timeline"
-                      : "View Timeline"}
+                    {openOrder === o.invoice_id ? "Hide Timeline" : "View Timeline"}
                   </button>
 
-                  <button
-                    onClick={() =>
-                      navigate(`/invoice/${o.invoice_id}`)
-                    }
-                  >
+                  {status !== "delivered" && status !== "cancelled" && (
+                    <button
+                      className="cancel-btn"
+                      onClick={() => cancelOrder(o.id)}
+                    >
+                      Cancel
+                    </button>
+                  )}
+
+                  <button onClick={() => navigate(`/invoice/${o.invoice_id}`)}>
                     View Invoice
                   </button>
                 </div>
+
+                {/* SINGLE TIMELINE FOR ALL PRODUCTS */}
+                {openOrder === o.invoice_id && (
+                  <div className="timeline">
+                    {timeline.length > 0 ? (
+                      timeline.map((t, i) => (
+                        <div key={i} className="timeline-item">
+                          <span className={`dot ${t.status || "placed"}`}></span>
+                          <div>
+                            <strong>{(t.status || "placed").toUpperCase()}</strong>
+                            <small>
+                              {t.created_at
+                                ? new Date(t.created_at).toLocaleString()
+                                : "Unknown date"}
+                            </small>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="empty">No timeline available</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           );

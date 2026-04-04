@@ -14,15 +14,14 @@ function AdminOrders() {
     setTimeout(() => setMsg(""), 2000);
   };
 
+  // Fetch grouped orders (by invoice_id)
   const fetchOrders = async () => {
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/orders/admin`, {
-        headers: authHeaders()
+        headers: authHeaders(),
       });
-
       if (res.status === 401) return logout();
-
       const data = await res.json();
       setOrders(data || []);
     } catch (err) {
@@ -37,15 +36,15 @@ function AdminOrders() {
     fetchOrders();
   }, []);
 
-  const updateStatus = async (id, status) => {
+  // Update status for all products in invoice
+  const updateStatus = async (invoice_id, status) => {
     setUpdating(true);
     try {
-      const res = await fetch(`${BASE_URL}/orders/${id}?status=${status}`, {
+      const res = await fetch(`${BASE_URL}/orders/${invoice_id}?status=${status}`, {
         method: "PUT",
-        headers: authHeaders()
+        headers: authHeaders(),
       });
       if (!res.ok) throw new Error("Failed to update status");
-
       showMsg(`Marked as ${status}`);
       fetchOrders();
     } catch (err) {
@@ -56,16 +55,16 @@ function AdminOrders() {
     }
   };
 
-  const deleteOrder = async (id) => {
-    if (!window.confirm("Delete order?")) return;
+  // Delete entire invoice
+  const deleteOrder = async (invoice_id) => {
+    if (!window.confirm("Delete this entire order?")) return;
     setUpdating(true);
     try {
-      const res = await fetch(`${BASE_URL}/orders/${id}`, {
+      const res = await fetch(`${BASE_URL}/orders/${invoice_id}`, {
         method: "DELETE",
-        headers: authHeaders()
+        headers: authHeaders(),
       });
       if (!res.ok) throw new Error("Failed to delete order");
-
       showMsg("Order deleted");
       fetchOrders();
     } catch (err) {
@@ -87,18 +86,30 @@ function AdminOrders() {
       {orders.length === 0 ? (
         <p className="empty-state">No orders</p>
       ) : (
-        orders.map(o => {
+        orders.map((o) => {
           const status = o.status || "placed";
 
+          // Split titles and images
+          const titles = (o.titles || "").split(",");
+          const images = (o.images || "").split(",");
+
           return (
-            <div className="admin-row" key={o.id}>
-              <img src={o.image || "/placeholder.png"} alt={o.title || "Product"} />
+            <div className="admin-row" key={o.invoice_id}>
+              {/* SCROLLABLE IMAGES */}
+              <div className="image-container">
+                {images.map((img, idx) => (
+                  <div className="product-image-wrapper" key={idx}>
+                    <img src={img || "/placeholder.png"} alt={titles[idx] || "Product"} />
+                    <span className="product-name" data-title={titles[idx] || "Unknown Product"}>
+                      {titles[idx] || "Unknown Product"}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
               <div className="admin-info">
-                <strong>{o.title || "Unknown Product"}</strong>
-                <span>₹{o.price ?? "N/A"}</span>
+                <span>Total Qty: {o.total_qty || 1}</span>
                 <small>User: {o.username || "Unknown"}</small>
-
                 <span className={`status-badge ${status}`}>
                   {status.toUpperCase()}
                 </span>
@@ -108,7 +119,7 @@ function AdminOrders() {
                 <button
                   className="ship-btn"
                   disabled={status !== "placed" || updating}
-                  onClick={() => updateStatus(o.id, "shipped")}
+                  onClick={() => updateStatus(o.invoice_id, "shipped")}
                 >
                   Ship
                 </button>
@@ -116,7 +127,7 @@ function AdminOrders() {
                 <button
                   className="deliver-btn"
                   disabled={status === "delivered" || updating}
-                  onClick={() => updateStatus(o.id, "delivered")}
+                  onClick={() => updateStatus(o.invoice_id, "delivered")}
                 >
                   Deliver
                 </button>
@@ -124,7 +135,7 @@ function AdminOrders() {
                 <button
                   className="delete-btn"
                   disabled={updating}
-                  onClick={() => deleteOrder(o.id)}
+                  onClick={() => deleteOrder(o.invoice_id)}
                 >
                   Delete
                 </button>

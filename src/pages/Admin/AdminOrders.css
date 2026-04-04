@@ -1,3 +1,6 @@
+/* ==========================
+   SUCCESS MESSAGE
+========================== */
 .success-msg {
   background: #4caf50;
   color: white;
@@ -8,10 +11,12 @@
   font-size: 14px;
 }
 
-/* ROW */
+/* ==========================
+   ROW
+========================== */
 .admin-row {
   display: grid;
-  grid-template-columns: 60px 1fr 170px;
+  grid-template-columns: 1fr 1fr 170px;
   align-items: center;
   gap: 12px;
   background: #fff;
@@ -27,18 +32,70 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* IMAGE */
-.admin-row img {
-  width: 55px;
-  height: 55px;
+/* ==========================
+   SCROLLABLE IMAGE CONTAINER
+========================== */
+.image-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.product-image-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;   /* ensures spacing for product title */
+  max-width: 100px;  /* prevent overlapping */
+  text-align: center;
+  flex-shrink: 0;
+  position: relative; /* for tooltip positioning */
+}
+
+.product-image-wrapper img {
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   border-radius: 6px;
   background: #f9f9f9;
   padding: 4px;
-  flex-shrink: 0;
 }
 
-/* INFO */
+/* ==========================
+   PRODUCT NAME BELOW IMAGE WITH TOOLTIP
+========================== */
+.product-name {
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 12px;
+  white-space: nowrap;        /* truncate text */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+  text-align: center;
+  cursor: default;
+}
+
+.product-image-wrapper:hover .product-name::after {
+  content: attr(data-title); /* show full product name */
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* ==========================
+   INFO SECTION
+========================== */
 .admin-info {
   display: flex;
   flex-direction: column;
@@ -53,7 +110,9 @@
   overflow-wrap: anywhere;
 }
 
-/* ACTIONS */
+/* ==========================
+   ACTIONS
+========================== */
 .admin-actions {
   display: flex;
   gap: 6px;
@@ -71,53 +130,28 @@
   color: white;
 }
 
-/* ================= COLORS ================= */
+/* ==========================
+   BUTTON COLORS
+========================== */
+.ship-btn { background: #ff9800; }
+.ship-btn:hover { background: #e68900; }
 
-/* SHIP */
-.ship-btn {
-  background: #ff9800;
-}
-.ship-btn:hover {
-  background: #e68900;
-}
+.deliver-btn { background: #4caf50; }
+.deliver-btn:hover { background: #3d8b40; }
 
-/* DELIVER */
-.deliver-btn {
-  background: #4caf50;
-}
-.deliver-btn:hover {
-  background: #3d8b40;
-}
+.delete-btn { background: #f44336; }
+.delete-btn:hover { background: #d32f2f; }
 
-/* DELETE */
-.delete-btn {
-  background: #f44336;
-}
-.delete-btn:hover {
-  background: #d32f2f;
-}
+/* ==========================
+   DISABLED BUTTONS
+========================== */
+.ship-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.deliver-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.delete-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ================= DISABLED FIX ================= */
-/* 🔥 KEEP COLOR BUT FADE */
-.ship-btn:disabled {
-  background: #ff9800;
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.deliver-btn:disabled {
-  background: #4caf50;
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.delete-btn:disabled {
-  background: #f44336;
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ================= STATUS BADGES ================= */
+/* ==========================
+   STATUS BADGES
+========================== */
 .status-badge {
   font-size: 11px;
   padding: 4px 8px;
@@ -127,38 +161,34 @@
   margin-top: 4px;
 }
 
-.status-badge.placed {
-  background: #ff9800;
-}
+.status-badge.placed { background: #ff9800; }
+.status-badge.shipped { background: #2196f3; }
+.status-badge.delivered { background: #4caf50; }
 
-.status-badge.shipped {
-  background: #2196f3;
-}
-
-.status-badge.delivered {
-  background: #4caf50;
-}
-
-/* EMPTY */
+/* ==========================
+   EMPTY STATE
+========================== */
 .empty-state {
   text-align: center;
   color: #777;
   padding: 20px;
 }
 
-/* ================= MOBILE ================= */
+/* ==========================
+   MOBILE RESPONSIVE
+========================== */
 @media (max-width: 768px) {
 
   .admin-row {
-    grid-template-columns: 50px 1fr;
-    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
   }
 
   .admin-actions {
-    grid-column: span 2;
     display: flex;
     gap: 6px;
     margin-top: 6px;
+    justify-content: flex-start;
   }
 
   .admin-actions button {
@@ -167,8 +197,24 @@
     padding: 6px;
   }
 
-  .admin-row img {
-    width: 100%;
-    height: 120px;
+  .image-container {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .product-image-wrapper {
+    min-width: 80px;
+    max-width: 90px;
+  }
+
+  .product-image-wrapper img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .product-name {
+    font-size: 11px;
+    line-height: 13px;
+    max-width: 80px;
   }
 }
