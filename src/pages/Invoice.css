@@ -19,14 +19,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   width: 280px;
   height: 280px;
-
   background: url("https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg") no-repeat center;
   background-size: contain;
-
-  opacity: 0.12;
+  opacity: 0.14;
   z-index: 9999;
   pointer-events: none;
 }
@@ -58,30 +55,28 @@
   border-radius: 3px;
 }
 
-/* ================= INFO ROWS (🔥 FIXED ALIGNMENT) ================= */
+/* ================= INFO ROWS ================= */
 .invoice-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
-  font-size: 16px;
-  gap: 10px;
+  margin: 12px 0;
+  font-size: 17px;
   width: 100%;
 }
 
-/* LEFT SIDE (LABEL) */
 .invoice-row strong {
   font-weight: 700;
   color: #111;
-  min-width: 180px;
 }
 
-/* RIGHT SIDE (VALUE) */
 .invoice-row span {
   font-weight: 700;
   color: #333;
-  margin-left: auto;      /* 🔥 PUSHES TO RIGHT CORNER */
+  margin-left: auto;
   text-align: right;
+  max-width: 60%;
+  word-break: break-word;
 }
 
 /* ================= ADDRESS ================= */
@@ -101,7 +96,7 @@
   color: #111;
 }
 
-/* ================= PRODUCTS TABLE ================= */
+/* ================= PRODUCTS ================= */
 .invoice-products {
   width: 100%;
   border-collapse: collapse;
@@ -125,7 +120,6 @@
 .invoice-products td {
   padding: 12px;
   border-bottom: 1px solid #eee;
-  font-weight: 500;
 }
 
 .invoice-products tr:last-child td {
@@ -155,7 +149,7 @@
   transform: scale(1.03);
 }
 
-/* ================= PRINT FIX ================= */
+/* ================= PRINT ================= */
 @media print {
   body * {
     visibility: hidden;
@@ -172,7 +166,6 @@
     width: 100%;
     box-shadow: none;
     border: none;
-
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -186,22 +179,29 @@
   }
 }
 
-/* ================= MOBILE ================= */
+/* ================= MOBILE (FIXED SAME LINE) ================= */
 @media (max-width: 600px) {
 
   .invoice-page {
     padding: 16px;
   }
 
+  /* 🔥 KEEP LEFT-RIGHT IN SAME LINE */
   .invoice-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .invoice-row strong {
+    font-size: 15px;
   }
 
   .invoice-row span {
-    text-align: left;
-    margin-left: 0; /* reset for mobile */
+    font-size: 15px;
+    text-align: right;
+    max-width: 55%;
   }
 
   .invoice-products th,

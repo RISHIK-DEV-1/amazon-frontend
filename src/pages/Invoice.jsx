@@ -39,7 +39,6 @@ function Invoice() {
       </p>
     );
 
-  // ✅ PARSE STRUCTURED ADDRESS SAFELY
   let addr = {};
   try {
     addr = JSON.parse(invoice.address || "{}");
@@ -50,41 +49,49 @@ function Invoice() {
   return (
     <div className="invoice-page">
       <h2>
-  Invoice #INV-{String(invoice.id).padStart(6, "0")}
-</h2>
+        Invoice #INV-{String(invoice.id).padStart(6, "0")}
+      </h2>
 
-      {/* ✅ FIXED ORDER ID */}
-      <p>
-  <strong>Order ID:</strong>{" "}
-  {invoice.order_ids?.length > 0
-    ? invoice.order_ids.length === 1
-      ? `ORD-${invoice.order_ids[0]}`
-      : `ORD-${invoice.order_ids[0]} +${invoice.order_ids.length - 1} more`
-    : "N/A"}
-</p>
+      {/* ✅ PERFECT LEFT-RIGHT ALIGNMENT */}
+      <div className="invoice-row">
+        <strong>Order ID:</strong>
+        <span>
+          {invoice.id ? `ORD-${invoice.id}` : "N/A"}
+        </span>
+      </div>
 
-      <p><strong>Placed by:</strong> {invoice.username || "N/A"}</p>
-      <p><strong>Total Amount:</strong> ₹{invoice.total_amount ?? "N/A"}</p>
-      <p><strong>Payment Mode:</strong> {invoice.payment_mode || "N/A"}</p>
+      <div className="invoice-row">
+        <strong>Placed by:</strong>
+        <span>{invoice.username || "N/A"}</span>
+      </div>
 
-      <p>
-        <strong>Created At:</strong>{" "}
-        {invoice.created_at
-          ? new Date(invoice.created_at).toLocaleString()
-          : "Unknown"}
-      </p>
+      <div className="invoice-row">
+        <strong>Total Amount:</strong>
+        <span>₹{invoice.total_amount ?? "N/A"}</span>
+      </div>
+
+      <div className="invoice-row">
+        <strong>Payment Mode:</strong>
+        <span>{invoice.payment_mode || "N/A"}</span>
+      </div>
+
+      <div className="invoice-row">
+        <strong>Created At:</strong>
+        <span>
+          {invoice.created_at
+            ? new Date(invoice.created_at).toLocaleString()
+            : "Unknown"}
+        </span>
+      </div>
 
       <h3>Delivery Address</h3>
 
       {invoice.address ? (
         <div className="invoice-address">
           <p><strong>{addr.name || "N/A"}</strong></p>
+          <p>{addr.house}{addr.area ? `, ${addr.area}` : ""}</p>
           <p>
-            {(addr.house || "")}
-            {addr.area ? `, ${addr.area}` : ""}
-          </p>
-          <p>
-            {(addr.city || "")}
+            {addr.city}
             {addr.state ? `, ${addr.state}` : ""}{" "}
             {addr.pincode ? `- ${addr.pincode}` : ""}
           </p>
