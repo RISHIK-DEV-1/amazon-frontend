@@ -4,7 +4,7 @@ export const BASE_URL =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
-    : "https://amazon-backend-production-219d.up.railway.app";
+    : "https://amazon-backend-y6mm.onrender.com";
 
 export const AuthContext = createContext();
 
