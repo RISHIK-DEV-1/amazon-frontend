@@ -1,3 +1,4 @@
+/* ==================== PAGE ==================== */
 .product-details {
   flex: 1;
   padding: 20px;
@@ -25,20 +26,17 @@
   border: 1px solid #ddd;
   padding: 6px;
   background: #f9f9f9;
-  flex-shrink: 0; /* ✅ prevent shrinking */
+  flex-shrink: 0;
 }
 
 /* ==================== PRODUCT INFO ==================== */
 .product-info {
   flex: 1;
   min-width: 250px;
-
-  /* 🔥 FIX OVERFLOW */
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
-/* TEXT FIX */
 .product-info h2,
 .product-info p,
 .product-info span,
@@ -131,7 +129,6 @@
   border: none;
 }
 
-/* ADD TO CART */
 .add-cart {
   background: #ffd814;
   border: 1px solid #fcd200;
@@ -146,7 +143,6 @@
   cursor: not-allowed;
 }
 
-/* REMOVE */
 .remove-cart {
   background: #ff4d4d;
   color: white;
@@ -156,7 +152,6 @@
   background: #e60000;
 }
 
-/* BUY NOW */
 .buy-now {
   background: #28a745;
   color: white;
@@ -166,7 +161,6 @@
   background: #218838;
 }
 
-/* CANCEL ORDER */
 .cancel-order {
   background: #dc3545;
   color: white;
@@ -239,11 +233,10 @@
   margin-bottom: 10px;
 }
 
-/* PAYMENT MODES */
 .payment-modes {
   display: flex;
   justify-content: space-around;
-  flex-wrap: wrap; /* ✅ mobile fix */
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -252,7 +245,6 @@
   font-size: 13px;
 }
 
-/* BUTTONS */
 .payment-buttons {
   display: flex;
   gap: 10px;
@@ -315,7 +307,6 @@
     width: 100%;
   }
 
-  /* 🔥 KEY FIX FOR OVERLAP */
   .product-info h2 {
     font-size: 20px;
   }
@@ -335,4 +326,67 @@
   .payment-input {
     width: 100%;
   }
+}
+
+/* ===================================================== */
+/* ================= ADD ONLY BELOW ===================== */
+/* ===================================================== */
+
+/* ADDRESS POPUP */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100; /* above modal */
+}
+
+.popup-box {
+  background: #fff;
+  padding: 18px;
+  border-radius: 8px;
+  width: 300px;
+  max-width: 90%;
+}
+
+/* formatted address */
+.formatted-address p {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #333;
+}
+
+/* buttons */
+.popup-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.popup-actions button {
+  flex: 1;
+  padding: 6px;
+  font-size: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-actions button:first-child {
+  background: #28a745;
+  color: white;
+}
+
+.popup-actions button:nth-child(2) {
+  background: #007bff;
+  color: white;
+}
+
+.popup-actions button:last-child {
+  background: #ddd;
 }
